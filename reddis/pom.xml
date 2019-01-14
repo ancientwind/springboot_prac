@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+             <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wayne.sbt2</groupId>
+        <artifactId>microServices</artifactId>
+        <version>0.0.5</version>
+    </parent>
+
+    <groupId>com.wayne.sbt2</groupId>
+    <artifactId>reddis</artifactId>
+    <version>0.0.5</version>
+    <packaging>jar</packaging>
+
+</project>
