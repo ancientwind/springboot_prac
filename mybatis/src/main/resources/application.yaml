@@ -1,0 +1,3 @@
+name: mybatis-ws
+server:
+  port: 8082
