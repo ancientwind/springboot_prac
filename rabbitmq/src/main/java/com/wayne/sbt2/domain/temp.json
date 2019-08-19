@@ -1,0 +1,29 @@
+[
+  {
+    "defaultDisplayProtocols": 1,
+    "motionAxisDrawerAutoHideTimeSec": 1,
+    "defaultECGWaveformShown": 1,
+    "patientInfoShowStrategy": 1,
+    "defaultPatientNameFormat": 0,
+    "patientAgeShown": 0,
+    "patientInfoExamDescriptionEnable": 1,
+    "selectedProtocolNameShown": 1,
+    "privacyModeSwitchedOnByDefault": 0,
+    "patientNameShown": 1,
+    "patientIdShown": 1,
+    "accessionNumberShown": 1,
+    "ageShown": 2,
+    "birthDateShown": 1,
+    "patientSexShown": 1,
+    "examDescriptionShown": 1,
+    "scheduleDateShown": 3
+  },
+  {
+    "geLang": "fr_FR",
+    "ecgWaveEnabled": true,
+    "autoPatientPositioningSupported": true,
+    "connectProEnabled": true,
+    "gantryOnLeft": true,
+    "emergencyPatientEnabled": true
+  }
+]

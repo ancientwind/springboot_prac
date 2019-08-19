@@ -1,15 +1,18 @@
 package com.wayne.sbt2.controller;
 
+import io.reactivex.Observable;
+import io.reactivex.schedulers.TestScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 212331901
@@ -39,33 +42,16 @@ public class RabbitmqController {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        System.out.println("start get at: " + LocalDateTime.now());
-        AtomicBoolean test = new AtomicBoolean(false);
+    public static void main(String[] args) {
 
-        Thread thread1 = new Thread( () -> {
-            int i = 0;
-            while (!test.get()) {
-                System.out.println(i++);
-                if (i==5) {break;}
-//                if (Thread.currentThread().isInterrupted()) {
-//                    System.out.println("interrupted");
-//                    break;}
-                else {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        System.out.println("interrupted");
-                        e.printStackTrace();
-                        break;
-                    }
-                }
-            }
-        } );
-        thread1.start();
+        List<String> list = new ArrayList<>();
+        list.add("apple");
+        list.add("pear");
 
-        Thread.sleep(3200);
-//        test.set(true);
-        thread1.interrupt();
+        Observable<Object> test = Observable.fromIterable(list);
+        list.add("orange");
+        test.throttleLast(1, TimeUnit.MILLISECONDS)
+                .map(s -> "result: " + s)
+                .subscribe(System.out::println);
     }
 }
