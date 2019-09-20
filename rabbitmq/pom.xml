@@ -35,10 +35,10 @@
             <artifactId>guava</artifactId>
             <version>23.5-jre</version> <!-- or 23.5-android for the Android flavor -->
         </dependency>
-        <dependency>
-            <groupId>com.weddini.throttling</groupId>
-            <artifactId>spring-boot-throttling-starter</artifactId>
-            <version>0.0.9</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.weddini.throttling</groupId>-->
+<!--            <artifactId>spring-boot-throttling-starter</artifactId>-->
+<!--            <version>0.0.9</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

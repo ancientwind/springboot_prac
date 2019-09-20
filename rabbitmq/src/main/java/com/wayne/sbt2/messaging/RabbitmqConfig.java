@@ -7,6 +7,7 @@ import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
@@ -18,9 +19,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import org.springframework.retry.RetryPolicy;
+import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.interceptor.MethodInvocationRecoverer;
 import org.springframework.retry.interceptor.RetryInterceptorBuilder;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
+import org.springframework.retry.policy.AlwaysRetryPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 
 /**
@@ -98,17 +105,69 @@ public class RabbitmqConfig implements RabbitListenerConfigurer {
 
     @Autowired
     ConnectionFactory connectionFactory;
-
+//    @Bean
+//    public SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory() {
+//        SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+//        simpleRabbitListenerContainerFactory.setConnectionFactory(connectionFactory);
+//        simpleRabbitListenerContainerFactory.setRetryTemplate(retryTemplate());
+////        simpleRabbitListenerContainerFactory.setMessageConverter(jsonMessageConverter());
+//        return simpleRabbitListenerContainerFactory;
+//    }
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
+//    @Bean
+//    public RabbitTemplate rabbitTemplate() {
+//        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+//
+//        RetryTemplate retryTemplate = new RetryTemplate();
+////        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+////        backOffPolicy.setInitialInterval(500L);
+////        backOffPolicy.setMultiplier(10.0D);
+////        backOffPolicy.setMaxInterval(3000L);
+////        RetryPolicy retryPolicy = new SimpleRetryPolicy(5);
+//////        retryTemplate.setBackOffPolicy(backOffPolicy);
+////        retryTemplate.setRetryPolicy(retryPolicy);
+//        RetryPolicy retryPolicy = new AlwaysRetryPolicy();
+//        retryTemplate.setRetryPolicy(retryPolicy);
+//
+//        rabbitTemplate.setRetryTemplate(retryTemplate);
+//        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+//
+//        return rabbitTemplate;
+//    }
+
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        rabbitTemplate.setRetryTemplate(retryTemplate());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public RetryTemplate retryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(retryPolicy());
+        retryTemplate.setBackOffPolicy(backOffPolicy());
+        return retryTemplate;
+    }
+
+    @Bean
+    public RetryPolicy retryPolicy() {
+        RetryPolicy retryPolicy = new SimpleRetryPolicy(2);
+        return retryPolicy;
+    }
+
+    @Bean
+    public BackOffPolicy backOffPolicy() {
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(5000L);
+        backOffPolicy.setMultiplier(2L);
+        backOffPolicy.setMaxInterval(20000L);
+        return backOffPolicy;
     }
 
     @Bean
@@ -128,25 +187,25 @@ public class RabbitmqConfig implements RabbitListenerConfigurer {
 //        registrar.setMessageHandlerMethodFactory(defaultMessageHandlerMethodFactory());
     }
 
-    @Bean
-    public SimpleRabbitListenerContainerFactory listenerContainerFactory() {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(jsonMessageConverter());
-        factory.setMaxConcurrentConsumers(5);
-        factory.setAdviceChain(new Advice[]{retryOperationsInterceptor()});
-        return factory;
-    }
+//    @Bean
+//    public SimpleRabbitListenerContainerFactory listenerContainerFactory() {
+//        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+//        factory.setConnectionFactory(connectionFactory);
+//        factory.setMessageConverter(jsonMessageConverter());
+//        factory.setMaxConcurrentConsumers(5);
+//        factory.setAdviceChain(new Advice[]{retryOperationsInterceptor()});
+//        return factory;
+//    }
 
-    @Bean
-    public RetryOperationsInterceptor retryOperationsInterceptor() {
-        return RetryInterceptorBuilder
-                .stateless()
-                .maxAttempts(5)
-                .backOffOptions(1000, 3.0, 10000)
-//                .recoverer(new RejectAndDontRequeueRecoverer())
-                .build();
-    }
+//    @Bean
+//    public RetryOperationsInterceptor retryOperationsInterceptor() {
+//        return RetryInterceptorBuilder
+//                .stateless()
+//                .maxAttempts(5)
+//                .backOffOptions(1000, 3.0, 10000)
+////                .recoverer(new RejectAndDontRequeueRecoverer())
+//                .build();
+//    }
 
 
     @Bean
