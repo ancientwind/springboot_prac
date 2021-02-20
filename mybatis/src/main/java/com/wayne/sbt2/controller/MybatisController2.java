@@ -13,16 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 212331901
  * @date 2019/2/13
  */
+@ConditionalOnExpression("'${product}' == 'revsggso'")
 @RestController
-@RequestMapping("mybatis")
-public class MybatisController {
+@RequestMapping("mybatis2")
+public class MybatisController2 {
 
-    private Logger logger = LoggerFactory.getLogger(MybatisController.class);
+    private Logger logger = LoggerFactory.getLogger(MybatisController2.class);
 
     @Autowired
     private Hello hello;
 
-    public MybatisController() {
+    public MybatisController2() {
         logger.info(this.getClass().getName() + " is created.");
     }
 

@@ -34,8 +34,8 @@ import org.springframework.retry.support.RetryTemplate;
  * Created by 305020173 on 2017/9/28.
  */
 
-@Configuration
-@EnableRabbit
+//@Configuration
+//@EnableRabbit
 public class RabbitmqConfig implements RabbitListenerConfigurer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitmqConfig.class);

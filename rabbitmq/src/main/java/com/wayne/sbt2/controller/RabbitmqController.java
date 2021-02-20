@@ -4,15 +4,20 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.TestScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author 212331901
@@ -27,8 +32,24 @@ public class RabbitmqController {
     private RestTemplate restTemplate;
 
     @GetMapping("test-get")
-    public String testGet() {
+    public String testGet(@RequestHeader MultiValueMap<String, String> headers, HttpServletRequest request) {
         try {
+
+            System.out.println("Request URI is: " + request.getRequestURI());
+            System.out.println("Request IP is: " + request.getRemoteAddr());
+            System.out.println("Request HOST is: " + request.getRemoteHost());
+
+            headers.forEach((key, value) -> {
+                System.out.println(String.format(
+                        "Header '%s' = '%s'", key, value.stream().collect(Collectors.joining("|"))
+                ));
+            });
+
+            // if request is redirected(like by nginx), to get real ip, config proxy server to forward source ip in header, and then get the specific header
+            System.out.println("zzzzz " + request.getHeader("X-Original-Forwarded-For") +
+                    request.getHeader("X-Forwarded-For") +
+                    request.getHeader("X-Real-Ip"));
+
             System.out.println("START get at: " + LocalDateTime.now());
             ResponseEntity<String> result = restTemplate.getForEntity(URL, String.class);
             System.out.println("END get at: " + LocalDateTime.now());

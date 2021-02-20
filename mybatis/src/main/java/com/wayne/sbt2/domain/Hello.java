@@ -3,6 +3,7 @@ package com.wayne.sbt2.domain;
 import com.wayne.sbt2.controller.MybatisController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/2/13
  */
 @Component
+@ConditionalOnExpression("'${product}' == 'revo'")
 public class Hello {
 
     private Logger logger = LoggerFactory.getLogger(MybatisController.class);
